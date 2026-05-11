@@ -1,0 +1,2123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; script-src 'sha256-4LVqry8n5Aqw1qM9Au793cxT1AwvZ5oZeCOzXgIid18='; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<title>The Lorebook Compendium — for SillyTavern &amp; JanitorAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+  /* ───────── design tokens ───────── */
+  :root{
+    --ink:        #0A1A0F;   /* deep forest — base */
+    --moss:      #7FCC8F;    /* mint accent */
+    --sage:      #8BAA7E;    /* muted sage */
+    --leaf:      #A8E6B0;    /* highlight green */
+    --wheat:     #DCAF70;    /* warm gold accent */
+    --paper:     #E8E4D9;    /* primary text on dark */
+    --vellum:    #EBDFBF;    /* soft cream */
+    --ink-2:     #0F2316;    /* slightly raised surface */
+    --ink-3:     #14301E;    /* card surface */
+    --ink-line:  #1f3a28;    /* hairline border */
+
+    --serif: "EB Garamond", "Garamond", "Adobe Garamond Pro", Georgia, serif;
+    --mono:  "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --r-sm: 4px;
+    --r-md: 10px;
+    --r-lg: 18px;
+
+    --shadow-soft: 0 1px 0 rgba(168,230,176,.06), 0 20px 40px -20px rgba(0,0,0,.6);
+  }
+
+  *,*::before,*::after{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin: 0;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(168,230,176,.07), transparent 60%),
+      radial-gradient(900px 500px at -10% 30%, rgba(220,175,112,.06), transparent 60%),
+      linear-gradient(180deg, #08160C 0%, var(--ink) 40%, #07140B 100%);
+    color: var(--paper);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100dvh;
+  }
+
+  /* subtle paper grain via SVG noise (no external) */
+  body::before{
+    content:"";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    opacity: .035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .wrap{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 64px 28px 96px;
+  }
+
+  a{ color: var(--leaf); text-underline-offset: 3px; }
+  a:hover{ color: var(--wheat); }
+  a:focus-visible{ outline: 2px solid var(--wheat); outline-offset: 3px; border-radius: 2px; }
+
+  /* ───────── typography ───────── */
+  .display{
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: .01em;
+    line-height: 1.05;
+    margin: 0;
+    font-size: clamp(44px, 7vw, 76px);
+    color: var(--vellum);
+  }
+  .display em{
+    font-style: normal;
+    color: var(--leaf);
+  }
+  h2{
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(28px, 3.4vw, 38px);
+    letter-spacing: .005em;
+    margin: 72px 0 8px;
+    color: var(--vellum);
+    line-height: 1.15;
+  }
+  h2 .num{
+    font-family: var(--mono);
+    font-size: .42em;
+    color: var(--wheat);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    margin-right: 14px;
+    vertical-align: middle;
+    font-weight: 400;
+  }
+  h3{
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 22px;
+    margin: 28px 0 6px;
+    color: var(--leaf);
+  }
+  h4{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--wheat);
+    margin: 20px 0 8px;
+    font-weight: 500;
+  }
+  p{ margin: 10px 0; }
+  .lead{
+    font-size: 21px;
+    line-height: 1.55;
+    color: var(--paper);
+    max-width: 60ch;
+    margin-top: 22px;
+  }
+  .kicker{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin: 0 0 18px;
+  }
+  .rule{
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--ink-line) 20%, var(--ink-line) 80%, transparent);
+    border: 0;
+    margin: 6px 0 0;
+  }
+  code, .mono{ font-family: var(--mono); font-size: .86em; }
+  code{
+    background: var(--ink-2);
+    color: var(--leaf);
+    padding: 2px 6px;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--ink-line);
+  }
+
+  /* ───────── header ───────── */
+  header.hero{
+    padding: 18px 0 40px;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .topbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 56px;
+    padding-right: 60px; /* leave space for the fixed hamburger */
+  }
+  .topbar .seal{
+    color: var(--wheat);
+  }
+  .ornament{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--sage);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .ornament::before, .ornament::after{
+    content: "";
+    width: 36px;
+    height: 1px;
+    background: var(--sage);
+    opacity: .5;
+  }
+  .meta-row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+  }
+  .chip{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--ink-line);
+    background: rgba(15,35,22,.6);
+    color: var(--paper);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+  }
+  .chip .dot{ width: 6px; height: 6px; border-radius: 50%; background: var(--moss); }
+  .chip.warm .dot{ background: var(--wheat); }
+
+  /* ───────── intro grid ───────── */
+  .intro-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin-top: 40px;
+  }
+  @media (max-width: 720px){
+    .intro-grid{ grid-template-columns: 1fr; }
+  }
+  .panel{
+    background: linear-gradient(180deg, rgba(20,48,30,.55), rgba(15,35,22,.35));
+    border: 1px solid var(--ink-line);
+    border-radius: var(--r-md);
+    padding: 22px 22px 20px;
+    box-shadow: var(--shadow-soft);
+  }
+  .panel .tag{
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--moss);
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+  }
+  .panel.alt .tag{ background: var(--wheat); }
+  .panel p{ color: var(--paper); margin: 6px 0; }
+  .panel small{ color: var(--sage); font-style: italic; }
+
+  /* ───────── two-column split (card vs lorebook) ───────── */
+  .split{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 28px;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    background: rgba(10,26,15,.5);
+  }
+  @media (max-width: 720px){ .split{ grid-template-columns: 1fr; } }
+  .split > div{
+    padding: 22px 22px 24px;
+  }
+  .split > div + div{
+    border-left: 1px solid var(--ink-line);
+  }
+  @media (max-width: 720px){
+    .split > div + div{ border-left: 0; border-top: 1px solid var(--ink-line); }
+  }
+  .split h4{ margin-top: 0; color: var(--moss); }
+  .split.alt-side h4 + h3 { color: var(--vellum); }
+  .split ul{
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+  }
+  .split li{
+    position: relative;
+    padding: 6px 0 6px 22px;
+    border-bottom: 1px dashed rgba(139,170,126,.18);
+    color: var(--paper);
+  }
+  .split li:last-child{ border-bottom: 0; }
+  .split li::before{
+    content: "✦";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    color: var(--moss);
+    font-size: 13px;
+  }
+  .split.warm li::before{ color: var(--wheat); }
+
+  /* ───────── three-layer architecture diagram ───────── */
+  .layers{
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .layer{
+    display: grid;
+    grid-template-columns: 130px 1fr auto;
+    align-items: center;
+    gap: 22px;
+    padding: 18px 22px;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--r-md);
+    background: linear-gradient(90deg, rgba(20,48,30,.7), rgba(10,26,15,.45));
+    position: relative;
+    overflow: hidden;
+  }
+  .layer::before{
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--moss);
+  }
+  .layer.world::before{ background: var(--sage); }
+  .layer.char::before{  background: var(--moss); }
+  .layer.user::before{  background: var(--wheat); }
+  .layer .label{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--vellum);
+  }
+  .layer .label .order{
+    display: block;
+    color: var(--sage);
+    margin-top: 4px;
+    font-size: 10px;
+  }
+  .layer .desc{ color: var(--paper); }
+  .layer .desc strong{ color: var(--leaf); font-weight: 600; }
+  .layer.user .desc strong{ color: var(--wheat); }
+  .layer .priority{
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--sage);
+    text-align: right;
+    white-space: nowrap;
+  }
+  @media (max-width: 720px){
+    .layer{
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .layer .priority{ text-align: left; }
+  }
+
+  /* ───────── category table ───────── */
+  .cat-grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+  }
+  @media (max-width: 720px){ .cat-grid{ grid-template-columns: 1fr; } }
+  .cat{
+    padding: 16px 18px;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--r-md);
+    background: rgba(15,35,22,.45);
+  }
+  .cat .head{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .cat .glyph{
+    font-size: 14px;
+    line-height: 1;
+    color: var(--wheat);
+    font-family: var(--mono);
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    border: 1px solid var(--ink-line);
+    padding: 3px 7px;
+    border-radius: var(--r-sm);
+    background: rgba(220,175,112,.08);
+  }
+  .cat .name{
+    font-family: var(--serif);
+    font-weight: 600;
+    color: var(--vellum);
+    font-size: 17px;
+  }
+  .cat p{
+    margin: 4px 0 0;
+    color: var(--paper);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .cat .ex{
+    display: block;
+    margin-top: 8px;
+    color: var(--sage);
+    font-style: italic;
+    font-size: 14px;
+    border-left: 2px solid var(--ink-line);
+    padding-left: 10px;
+  }
+
+  /* ───────── example block ───────── */
+  .example{
+    margin-top: 22px;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--r-md);
+    background: var(--ink-2);
+    overflow: hidden;
+  }
+  .example .bar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: rgba(127,204,143,.08);
+    border-bottom: 1px solid var(--ink-line);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--sage);
+  }
+  .example .body{
+    padding: 18px 20px;
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--paper);
+    white-space: pre-wrap;
+  }
+  .example .body .k{ color: var(--moss); }
+  .example .body .v{ color: var(--vellum); }
+  .example .body .c{ color: var(--sage); font-style: italic; }
+
+  /* ───────── do/don't ───────── */
+  .do-dont{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 22px;
+  }
+  @media (max-width: 720px){ .do-dont{ grid-template-columns: 1fr; } }
+  .do-dont .col{
+    padding: 18px 20px;
+    border-radius: var(--r-md);
+    border: 1px solid var(--ink-line);
+  }
+  .do-dont .do { background: linear-gradient(180deg, rgba(127,204,143,.08), transparent); }
+  .do-dont .dont{ background: linear-gradient(180deg, rgba(220,175,112,.08), transparent); }
+  .do-dont h4.do-h{ color: var(--moss); }
+  .do-dont h4.dont-h{ color: var(--wheat); }
+  .do-dont ul{ margin: 6px 0 0; padding: 0; list-style: none; }
+  .do-dont li{ padding: 5px 0 5px 22px; position: relative; color: var(--paper); }
+  .do-dont .do li::before{
+    content: "✓"; position: absolute; left: 0; color: var(--moss); font-weight: 700;
+  }
+  .do-dont .dont li::before{
+    content: "✗"; position: absolute; left: 0; color: var(--wheat); font-weight: 700;
+  }
+
+  /* ───────── footer ───────── */
+  footer.colophon{
+    margin-top: 96px;
+    padding-top: 28px;
+    border-top: 1px solid var(--ink-line);
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--sage);
+  }
+  footer.colophon a{
+    display: inline-block;
+    margin-top: 6px;
+    color: var(--wheat);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(220,175,112,.4);
+    padding-bottom: 1px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: .02em;
+    text-transform: none;
+  }
+  footer.colophon a:hover{ color: var(--leaf); border-bottom-color: var(--leaf); }
+  footer .signoff{
+    margin-top: 22px;
+    color: var(--sage);
+    font-style: italic;
+    font-family: var(--serif);
+    font-size: 14px;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  /* ───────── mobile pass ───────── */
+  @media (max-width: 720px){
+    body{ font-size: 17px; line-height: 1.6; }
+    .wrap{ padding: 36px 18px 64px; }
+    .lead{ font-size: 17px; }
+    h2{ margin: 56px 0 6px; }
+    h2 .num{ display: block; margin: 0 0 6px; font-size: 11px; }
+    .topbar{
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 36px;
+      font-size: 10px;
+      letter-spacing: .18em;
+      padding-right: 50px;
+    }
+    .personal-banner{
+      font-size: 13px;
+      padding: 9px 14px;
+      margin-bottom: 12px;
+    }
+    .disclaimer summary{
+      font-size: 10px;
+      letter-spacing: .18em;
+      padding: 11px 16px;
+    }
+    .disclaimer .body{
+      font-size: 14px;
+      padding: 4px 16px 16px;
+    }
+    .ornament{ font-size: 10px; }
+    .ornament::before, .ornament::after{ width: 22px; }
+    .meta-row{ gap: 8px; }
+    .chip{
+      font-size: 10px;
+      padding: 5px 10px;
+      letter-spacing: .12em;
+    }
+    .layer{ padding: 16px 18px; }
+    .panel{ padding: 18px 18px 16px; }
+    .split > div{ padding: 18px 18px 20px; }
+    .cat{ padding: 14px 16px; }
+    .cat .name{ font-size: 16px; }
+    .cat p{ font-size: 15px; }
+    .cat .ex{ font-size: 13px; }
+    .do-dont .col{ padding: 16px 16px; }
+    .example .body{
+      font-size: 14px;
+      padding: 14px 14px;
+      overflow-x: auto;
+      word-break: break-word;
+    }
+    .example .bar{ font-size: 9px; padding: 8px 14px; letter-spacing: .18em; }
+    code{ font-size: 13px; word-break: break-word; }
+    footer.colophon{ margin-top: 64px; }
+    footer.colophon a{ font-size: 17px; }
+  }
+
+  @media (max-width: 380px){
+    .display{ font-size: 40px; }
+    .wrap{ padding: 28px 14px 56px; }
+    .panel{ padding: 16px 14px; }
+    .split > div{ padding: 16px 14px; }
+    .layer{ padding: 14px 14px; }
+    .layer .label{ font-size: 10px; letter-spacing: .18em; }
+  }
+
+  /* prevent horizontal overflow on any screen */
+  img, svg, .panel, .cat, .layer, .example, .split{ max-width: 100%; }
+  pre, .body{ max-width: 100%; }
+
+  /* respect reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+  }
+
+  /* ───────── workflow steps ───────── */
+  .steps{
+    counter-reset: step;
+    margin-top: 26px;
+    display: grid;
+    gap: 14px;
+  }
+  .step{
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 18px;
+    padding: 18px 20px;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--r-md);
+    background: linear-gradient(180deg, rgba(20,48,30,.4), rgba(15,35,22,.2));
+    position: relative;
+  }
+  .step::before{
+    content: counter(step, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 24px;
+    color: var(--moss);
+    align-self: start;
+    padding-top: 2px;
+    letter-spacing: .04em;
+  }
+  .step h3{
+    margin: 0 0 6px;
+    font-size: 19px;
+    color: var(--vellum);
+  }
+  .step p{
+    margin: 0;
+    color: var(--paper);
+    font-size: 16px;
+  }
+  .step .why{
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--sage);
+    font-style: italic;
+  }
+  @media (max-width: 720px){
+    .step{
+      grid-template-columns: 42px 1fr;
+      gap: 12px;
+      padding: 16px 16px;
+    }
+    .step::before{ font-size: 20px; }
+    .step h3{ font-size: 17px; }
+    .step p{ font-size: 15px; }
+  }
+
+  /* ───────── card field cheat-sheet ───────── */
+  .field-table{
+    margin-top: 24px;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .field-row{
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .field-row:last-child{ border-bottom: 0; }
+  .field-row .name{
+    padding: 16px 18px;
+    background: rgba(127,204,143,.05);
+    border-right: 1px solid var(--ink-line);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--leaf);
+  }
+  .field-row .name small{
+    display: block;
+    color: var(--sage);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    letter-spacing: 0;
+    text-transform: none;
+    margin-top: 4px;
+  }
+  .field-row .desc{
+    padding: 16px 18px;
+    color: var(--paper);
+    font-size: 16px;
+  }
+  .field-row .desc em{ color: var(--wheat); font-style: italic; }
+  .field-row .desc strong{ color: var(--vellum); }
+  @media (max-width: 720px){
+    .field-row{
+      grid-template-columns: 1fr;
+    }
+    .field-row .name{
+      border-right: 0;
+      border-bottom: 1px solid var(--ink-line);
+      padding: 12px 14px;
+    }
+    .field-row .desc{ padding: 14px; font-size: 15px; }
+  }
+
+  /* ───────── token budget bar ───────── */
+  .budget-wrap{
+    margin-top: 24px;
+    padding: 22px;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--r-md);
+    background: rgba(15,35,22,.4);
+  }
+  .budget-label{
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 10px;
+  }
+  .budget-bar{
+    display: flex;
+    height: 38px;
+    border-radius: var(--r-sm);
+    overflow: hidden;
+    border: 1px solid var(--ink-line);
+  }
+  .budget-bar > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 500;
+    padding: 0 6px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .budget-bar .b-system{ background: var(--wheat);  flex: 0 0 12%; }
+  .budget-bar .b-card{   background: var(--leaf);   flex: 0 0 14%; }
+  .budget-bar .b-lore{   background: var(--moss);   flex: 0 0 30%; }
+  .budget-bar .b-chat{   background: var(--sage);   flex: 0 0 38%; color: var(--ink); }
+  .budget-bar .b-reply{  background: var(--vellum); flex: 0 0 6%; }
+  .budget-legend{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 18px;
+    margin-top: 14px;
+    font-size: 14px;
+    color: var(--paper);
+  }
+  .budget-legend .item{
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .budget-legend .swatch{
+    width: 12px; height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    transform: translateY(1px);
+  }
+  .budget-legend small{
+    color: var(--sage);
+    font-style: italic;
+    font-size: 13px;
+  }
+  @media (max-width: 720px){
+    .budget-bar{ height: 32px; }
+    .budget-bar > div{ font-size: 9px; letter-spacing: .08em; }
+    .budget-legend{ grid-template-columns: 1fr; }
+  }
+
+  /* ───────── mistakes (Q + fix accordions) ───────── */
+  .mistakes{
+    margin-top: 24px;
+    display: grid;
+    gap: 10px;
+  }
+  .mistake{
+    border: 1px solid var(--ink-line);
+    border-radius: var(--r-md);
+    background: rgba(15,35,22,.35);
+    overflow: hidden;
+  }
+  .mistake summary{
+    cursor: pointer;
+    list-style: none;
+    padding: 14px 18px;
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--vellum);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    user-select: none;
+  }
+  .mistake summary::-webkit-details-marker{ display: none; }
+  .mistake summary::before{
+    content: "?";
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--wheat);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+  .mistake[open] summary::before{
+    content: "✓";
+    background: var(--moss);
+  }
+  .mistake summary:focus-visible{ outline: 2px solid var(--wheat); outline-offset: -2px; }
+  .mistake .body{
+    padding: 4px 18px 18px;
+    color: var(--paper);
+    font-size: 16px;
+    line-height: 1.6;
+    border-top: 1px solid var(--ink-line);
+    margin-top: 4px;
+    padding-top: 14px;
+  }
+  .mistake .body strong{ color: var(--leaf); }
+  .mistake .body em{ color: var(--wheat); font-style: italic; }
+  .mistake .body .fix{
+    margin-top: 10px;
+    padding-left: 14px;
+    border-left: 2px solid var(--moss);
+    color: var(--paper);
+  }
+  @media (max-width: 720px){
+    .mistake summary{ font-size: 15px; padding: 12px 14px; }
+    .mistake .body{ font-size: 14px; padding: 4px 14px 14px; padding-top: 12px; }
+  }
+
+  /* ───────── glossary ───────── */
+  .glossary{
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .glossary dt{
+    padding: 14px 18px 4px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--leaf);
+  }
+  .glossary dd{
+    padding: 0 18px 14px;
+    margin: 0;
+    color: var(--paper);
+    font-size: 15px;
+    border-bottom: 1px solid var(--ink-line);
+    line-height: 1.5;
+  }
+  .glossary dd:last-child{ border-bottom: 0; }
+  .glossary dd em{ color: var(--sage); font-style: italic; }
+  @media (max-width: 720px){
+    .glossary{ grid-template-columns: 1fr; }
+    .glossary dt{ padding: 12px 14px 2px; font-size: 11px; }
+    .glossary dd{ padding: 0 14px 12px; font-size: 14px; }
+  }
+
+  /* ───────── resources ───────── */
+  .resources{
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .resource{
+    padding: 18px 20px;
+    border: 1px solid var(--ink-line);
+    border-left: 3px solid var(--moss);
+    border-radius: var(--r-md);
+    background: rgba(15,35,22,.4);
+  }
+  .resource.warm{ border-left-color: var(--wheat); }
+  .resource h4{
+    margin: 0 0 6px;
+    color: var(--vellum);
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .resource p{
+    margin: 4px 0 10px;
+    color: var(--paper);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .resource a{
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--leaf);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(168,230,176,.3);
+    padding-bottom: 1px;
+  }
+  .resource a:hover{ color: var(--wheat); border-bottom-color: var(--wheat); }
+  @media (max-width: 720px){
+    .resources{ grid-template-columns: 1fr; }
+    .resource{ padding: 16px; }
+  }
+
+  .vibe-note{
+    margin-top: 28px;
+    padding: 18px 22px;
+    border: 1px dashed var(--wheat);
+    border-radius: var(--r-md);
+    background: linear-gradient(180deg, rgba(220,175,112,.08), transparent);
+    color: var(--paper);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: center;
+  }
+  .vibe-note strong{
+    font-style: normal;
+    color: var(--wheat);
+  }
+  .vibe-note .kao{
+    display: block;
+    margin-top: 6px;
+    color: var(--leaf);
+    font-style: normal;
+    font-size: 18px;
+  }
+
+  /* ───────── platform note (under section heading) ───────── */
+  .platform-note{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 16px;
+    padding: 6px 12px 6px 10px;
+    border: 1px solid var(--ink-line);
+    border-left: 3px solid var(--moss);
+    background: rgba(127,204,143,.06);
+    border-radius: var(--r-sm);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--paper);
+  }
+  .platform-note .pill{
+    color: var(--ink);
+    background: var(--moss);
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 500;
+    letter-spacing: .18em;
+  }
+  .platform-note .also{
+    color: var(--sage);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .platform-note a{ color: var(--leaf); }
+  @media (max-width: 720px){
+    .platform-note{
+      flex-wrap: wrap;
+      font-size: 10px;
+      padding: 6px 10px 6px 9px;
+    }
+    .platform-note .also{ font-size: 12px; }
+  }
+
+  /* ───────── personal banner ───────── */
+  .personal-banner{
+    margin: 0 0 18px;
+    padding: 10px 16px;
+    border: 1px solid var(--ink-line);
+    border-left: 3px solid var(--wheat);
+    background: linear-gradient(90deg, rgba(220,175,112,.08), rgba(15,35,22,.3));
+    border-radius: var(--r-sm);
+    color: var(--vellum);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .personal-banner strong{
+    font-style: normal;
+    color: var(--wheat);
+    letter-spacing: .02em;
+  }
+
+  /* ───────── disclaimer (details) ───────── */
+  .disclaimer{
+    margin-top: 28px;
+    border: 1px dashed var(--ink-line);
+    border-radius: var(--r-md);
+    background: rgba(15,35,22,.3);
+    overflow: hidden;
+  }
+  .disclaimer summary{
+    cursor: pointer;
+    list-style: none;
+    padding: 12px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--sage);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+  }
+  .disclaimer summary::-webkit-details-marker{ display: none; }
+  .disclaimer summary::before{
+    content: "+";
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 0;
+    color: var(--wheat);
+    transition: transform .25s ease;
+    display: inline-block;
+    width: 14px;
+    text-align: center;
+  }
+  .disclaimer[open] summary::before{ content: "−"; }
+  .disclaimer summary:focus-visible{ outline: 2px solid var(--wheat); outline-offset: -2px; }
+  .disclaimer .body{
+    padding: 4px 18px 18px;
+    color: var(--paper);
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.55;
+    border-top: 1px solid var(--ink-line);
+    margin-top: 4px;
+    padding-top: 14px;
+  }
+  .disclaimer .body em{ color: var(--wheat); font-style: italic; }
+
+  /* ───────── hamburger nav (CSS-only, no JS) ───────── */
+  /* hide the toggle checkbox */
+  #nav-toggle{
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  #nav-toggle:focus-visible + .nav-btn{
+    outline: 2px solid var(--wheat);
+    outline-offset: 2px;
+  }
+
+  .nav-btn{
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 100;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--ink-line);
+    background: rgba(10,26,15,.85);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .2s ease, border-color .2s ease;
+  }
+  .nav-btn:hover{
+    background: rgba(20,48,30,.9);
+    border-color: var(--moss);
+  }
+  .nav-btn .bars{
+    position: relative;
+    width: 18px;
+    height: 12px;
+  }
+  .nav-btn .bars::before,
+  .nav-btn .bars::after,
+  .nav-btn .bars span{
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    height: 1.5px;
+    background: var(--paper);
+    border-radius: 1px;
+    transition: transform .25s ease, opacity .2s ease, top .25s ease;
+  }
+  .nav-btn .bars::before{ top: 0; }
+  .nav-btn .bars span{ top: 5.25px; }
+  .nav-btn .bars::after{ top: 10.5px; }
+
+  /* open state: morph into × */
+  #nav-toggle:checked ~ .nav-btn .bars::before{
+    top: 5.25px;
+    transform: rotate(45deg);
+  }
+  #nav-toggle:checked ~ .nav-btn .bars::after{
+    top: 5.25px;
+    transform: rotate(-45deg);
+  }
+  #nav-toggle:checked ~ .nav-btn .bars span{ opacity: 0; }
+
+  /* nav panel + scrim */
+  .nav-scrim{
+    position: fixed;
+    inset: 0;
+    background: rgba(7,18,11,.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+    z-index: 90;
+  }
+  #nav-toggle:checked ~ .nav-scrim{
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .nav-panel{
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(340px, 80vw);
+    background: linear-gradient(180deg, #0c2014 0%, #08160C 100%);
+    border-left: 1px solid var(--ink-line);
+    z-index: 95;
+    transform: translateX(100%);
+    transition: transform .32s cubic-bezier(.4,.0,.2,1);
+    padding: 80px 28px 32px;
+    overflow-y: auto;
+    box-shadow: -20px 0 60px rgba(0,0,0,.5);
+  }
+  #nav-toggle:checked ~ .nav-panel{
+    transform: translateX(0);
+  }
+  .nav-panel .nav-eyebrow{
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--wheat);
+    margin: 0 0 18px;
+  }
+  .nav-panel ol{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: nav;
+  }
+  .nav-panel li{
+    counter-increment: nav;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .nav-panel li:last-child{ border-bottom: 0; }
+  .nav-panel a{
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 14px 0;
+    text-decoration: none;
+    color: var(--paper);
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.3;
+    transition: color .18s ease, padding-left .18s ease;
+  }
+  .nav-panel a::before{
+    content: "§ " counter(nav, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .18em;
+    color: var(--sage);
+    flex-shrink: 0;
+    min-width: 42px;
+    transform: translateY(-1px);
+  }
+  .nav-panel a:hover,
+  .nav-panel a:focus-visible{
+    color: var(--leaf);
+    padding-left: 6px;
+    outline: none;
+  }
+  .nav-panel a:focus-visible{ background: rgba(168,230,176,.06); }
+
+  /* hamburger on small screens — slightly smaller offset */
+  @media (max-width: 720px){
+    .nav-btn{
+      top: 14px;
+      right: 14px;
+      width: 42px;
+      height: 42px;
+    }
+    .nav-panel{
+      padding: 72px 22px 28px;
+    }
+    .nav-panel a{ font-size: 18px; }
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- ─────────── CSS-only hamburger nav (no JS) ─────────── -->
+  <input type="checkbox" id="nav-toggle" aria-label="Open table of contents">
+  <label for="nav-toggle" class="nav-btn" role="button" aria-controls="nav-panel" aria-label="Toggle table of contents">
+    <span class="bars" aria-hidden="true"><span></span></span>
+  </label>
+  <label for="nav-toggle" class="nav-scrim" aria-hidden="true"></label>
+  <nav class="nav-panel" id="nav-panel" aria-label="Table of contents">
+    <p class="nav-eyebrow">Table of contents</p>
+    <ol>
+      <li><a href="#s1">What is a lorebook?</a></li>
+      <li><a href="#s2">What belongs where</a></li>
+      <li><a href="#s3">The three layers</a></li>
+      <li><a href="#s4">Entry categories</a></li>
+      <li><a href="#s5">Anatomy of an entry</a></li>
+      <li><a href="#s6">Keywords — the trigger</a></li>
+      <li><a href="#s7">Quick rules</a></li>
+      <li><a href="#s8">Build order</a></li>
+      <li><a href="#s9">Card field cheat-sheet</a></li>
+      <li><a href="#s10">Where do tokens go?</a></li>
+      <li><a href="#s11">Common mistakes</a></li>
+      <li><a href="#s12">Glossary</a></li>
+      <li><a href="#s13">Further reading</a></li>
+    </ol>
+  </nav>
+
+  <main class="wrap">
+
+    <p class="personal-banner">
+      <strong>Heads up —</strong> this is the system <em>I</em> personally use
+      to build my bots. Other creators do it differently, and that's
+      perfectly fine. Treat this as <em>one</em> approach, not <em>the</em>
+      approach.
+    </p>
+
+    <header class="hero">
+      <div class="topbar">
+        <span>☘ Folio I &nbsp;·&nbsp; Beginner's Edition</span>
+        <span class="seal">★ aceenvw</span>
+      </div>
+
+      <p class="ornament">a small, useful book</p>
+      <h1 class="display">The Lorebook<br><em>Compendium.</em></h1>
+      <p class="lead">
+        A short, visual reference for what belongs <em>inside</em> a lorebook
+        — and what is better kept on the character card. Written for beginners
+        building bots in <strong>SillyTavern</strong> and <strong>JanitorAI</strong>.
+      </p>
+
+      <div class="meta-row" aria-label="Platforms covered">
+        <span class="chip"><span class="dot"></span>SillyTavern · regex</span>
+        <span class="chip warm"><span class="dot"></span>JanitorAI · wildcards</span>
+        <span class="chip"><span class="dot"></span>≤ 100 entries total</span>
+      </div>
+
+      <details class="disclaimer">
+        <summary>A small disclaimer · open to read</summary>
+        <div class="body">
+          I'm <em>not</em> a professional. This is just an archive of what
+          I've picked up over months of trial, error, and stubbornness while
+          making my own bots. None of it is gospel — it's notes from one
+          person's workbench. The way I build things now will probably look
+          different in six months, and the file you're reading might quietly
+          change with it. <em>Take what helps, leave what doesn't.</em>
+        </div>
+      </details>
+    </header>
+
+    <!-- ─────────── §1 What lives where ─────────── -->
+    <section aria-labelledby="s1">
+      <h2 id="s1"><span class="num">§ 01</span>What is a lorebook?</h2>
+      <hr class="rule">
+      <p class="lead" style="font-size:18px">
+        A lorebook is a <strong>library of small notes</strong> the AI only sees
+        when it needs them. Each note (an <em>entry</em>) is triggered by
+        keywords in the chat. This keeps the prompt short and the character
+        consistent — facts arrive <em>just-in-time</em>, not all at once.
+      </p>
+
+      <div class="intro-grid">
+        <article class="panel">
+          <span class="tag">Card</span>
+          <h3 style="margin-top:4px">Always-on identity</h3>
+          <p>The character's <strong>permanent self</strong>: name, look, voice,
+             personality, the dynamic with <code>{{user}}</code>. Loaded every
+             single turn.</p>
+          <p><small>If the AI must know it to stay in character — it goes here.</small></p>
+        </article>
+
+        <article class="panel alt">
+          <span class="tag">Lorebook</span>
+          <h3 style="margin-top:4px">Triggered context</h3>
+          <p>The <strong>world around them</strong>: places, NPCs, secrets,
+             events, kinks, backstory. Injected only when keywords fire.</p>
+          <p><small>If it's only relevant <em>sometimes</em> — it goes here.</small></p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ─────────── §2 What goes where ─────────── -->
+    <section aria-labelledby="s2">
+      <h2 id="s2"><span class="num">§ 02</span>What belongs <em>where?</em></h2>
+      <hr class="rule">
+      <p class="lead" style="font-size:18px">
+        The single most useful question to ask before writing a single word:
+        <em>does the AI need this on every turn, or only sometimes?</em>
+      </p>
+
+      <div class="split" role="table" aria-label="Card vs Lorebook content split">
+        <div role="rowgroup">
+          <h4>Always-on</h4>
+          <h3 style="margin:0 0 6px;color:var(--vellum)">Keep on the Card</h3>
+          <ul>
+            <li>Name, age, pronouns, occupation</li>
+            <li>Appearance (hair, eyes, build, voice, scent)</li>
+            <li>Core personality &amp; speech patterns</li>
+            <li>Default mood, defense mechanisms</li>
+            <li>Relationship with <code>{{user}}</code> — current dynamic</li>
+            <li>Sexuality summary &amp; hard limits</li>
+            <li>2–3 line backstory summary</li>
+            <li>One-line names of key people in their life</li>
+          </ul>
+        </div>
+        <div role="rowgroup" class="warm-side">
+          <h4 style="color:var(--wheat)">Triggered</h4>
+          <h3 style="margin:0 0 6px;color:var(--vellum)">Move to a Lorebook</h3>
+          <ul>
+            <li>Full backstory events &amp; memories</li>
+            <li>Hidden traits (jealousy, drunk behavior, attraction tells)</li>
+            <li>Secrets &amp; reveals (with delay/cooldown)</li>
+            <li>NPCs — friends, family, rivals, exes</li>
+            <li>Locations — apartment, bar, workplace</li>
+            <li>Organizations &amp; factions</li>
+            <li>World setting, lore, culture</li>
+            <li>Detailed NSFW behavior (kinks, sounds, aftercare)</li>
+            <li>Recurring events &amp; their reactions</li>
+          </ul>
+        </div>
+      </div>
+
+      <p style="margin-top:22px;color:var(--sage);font-style:italic">
+        Rule of thumb — if the card grows past <strong>~2,500 tokens</strong>,
+        the rest belongs in lorebook entries that <em>fire when relevant</em>.
+      </p>
+    </section>
+
+    <!-- ─────────── §3 Three layers ─────────── -->
+    <section aria-labelledby="s3">
+      <h2 id="s3"><span class="num">§ 03</span>The three layers</h2>
+      <hr class="rule">
+      <p class="lead" style="font-size:18px">
+        A clean setup uses <strong>three lorebooks</strong>, each looking at
+        the story from a different angle. SillyTavern keeps them as separate
+        files; on JanitorAI, the same logic lives inside one Advanced Script.
+      </p>
+
+      <div class="layers" role="list">
+        <div class="layer world" role="listitem">
+          <div class="label">World</div>
+          <div class="desc">
+            The <strong>setting</strong>. Encyclopedic, character-agnostic —
+            places, NPCs, factions, lore. The same world any character
+            could live in.
+          </div>
+          <div class="priority">global<br>scope</div>
+        </div>
+
+        <div class="layer char" role="listitem">
+          <div class="label">Character</div>
+          <div class="desc">
+            The character's <strong>personal experience</strong> of that world —
+            their friends, secrets, memories, hidden traits.
+            <code>{{char}}</code>-centric.
+          </div>
+          <div class="priority">linked to<br>the card</div>
+        </div>
+
+        <div class="layer user" role="listitem">
+          <div class="label">User / Persona</div>
+          <div class="desc">
+            What the character has <strong>noticed about <code>{{user}}</code></strong> —
+            family, backstory, observed traits. Written as things the
+            character can <em>see</em>, not as AI instructions.
+          </div>
+          <div class="priority">tied to<br>the persona</div>
+        </div>
+      </div>
+
+      <p style="margin-top:18px;color:var(--sage);font-style:italic">
+        Not every bot needs all three. A simple OC can ship with just a
+        Character lorebook. Add layers when the world or <code>{{user}}</code>
+        get rich enough to deserve their own pages.
+      </p>
+    </section>
+
+    <!-- ─────────── §4 Entry categories ─────────── -->
+    <section aria-labelledby="s4">
+      <h2 id="s4"><span class="num">§ 04</span>Common entry categories</h2>
+      <hr class="rule">
+      <p class="lead" style="font-size:18px">
+        Most lorebooks organize entries into a handful of repeatable
+        categories. You don't need all of them — pick what your story
+        actually needs and skip the rest.
+      </p>
+
+      <div class="cat-grid">
+        <article class="cat">
+          <div class="head">
+            <span class="glyph">NPC</span>
+            <span class="name">Character profile</span>
+          </div>
+          <p>One entry per supporting character. Name, role, look, quirks,
+             and how they relate to <code>{{char}}</code>.</p>
+          <span class="ex">Triggered by name, nickname, role.</span>
+        </article>
+
+        <article class="cat">
+          <div class="head">
+            <span class="glyph">Loc</span>
+            <span class="name">Location</span>
+          </div>
+          <p>A place that matters: home, workplace, school, hangout. Includes
+             atmosphere, who's usually there, what happens.</p>
+          <span class="ex">Triggered by place name and type.</span>
+        </article>
+
+        <article class="cat">
+          <div class="head">
+            <span class="glyph">Org</span>
+            <span class="name">Organization / Faction</span>
+          </div>
+          <p>Friend group, company, school, club, gang. Members, purpose,
+             reputation, internal dynamics.</p>
+          <span class="ex">Triggered by group name + member names.</span>
+        </article>
+
+        <article class="cat">
+          <div class="head">
+            <span class="glyph">Lore</span>
+            <span class="name">World / Culture</span>
+          </div>
+          <p>Setting facts: era, geography, technology, customs, slang.
+             Use one entry per theme — don't dump it all in one.</p>
+          <span class="ex">Triggered by topic words.</span>
+        </article>
+
+        <article class="cat">
+          <div class="head">
+            <span class="glyph">Past</span>
+            <span class="name">Backstory</span>
+          </div>
+          <p>Specific past events that shaped the character. What happened,
+             who was there, the lasting emotional mark.</p>
+          <span class="ex">Triggered by event-specific words.</span>
+        </article>
+
+        <article class="cat">
+          <div class="head">
+            <span class="glyph">Trait</span>
+            <span class="name">Hidden trait</span>
+          </div>
+          <p>Reactions the AI should know but only show on cue: jealousy,
+             drunkenness, vulnerability, attraction tells.</p>
+          <span class="ex">Triggered by emotional / situational words.</span>
+        </article>
+
+        <article class="cat">
+          <div class="head">
+            <span class="glyph">Event</span>
+            <span class="name">Event</span>
+          </div>
+          <p>A specific scene that fires when conditions align. Often gets a
+             cooldown so it doesn't repeat every turn.</p>
+          <span class="ex">Triggered by precise keywords.</span>
+        </article>
+
+        <article class="cat">
+          <div class="head">
+            <span class="glyph">Secret</span>
+            <span class="name">Secret</span>
+          </div>
+          <p>Something the character is hiding. Usually delayed — not
+             revealed in the first few messages of a chat.</p>
+          <span class="ex">Triggered by reveal-adjacent words.</span>
+        </article>
+
+        <article class="cat">
+          <div class="head">
+            <span class="glyph">NSFW</span>
+            <span class="name">Intimacy / NSFW</span>
+          </div>
+          <p>How the character behaves in intimate moments — sounds,
+             physical tells, kinks, aftercare. Always gate with explicit
+             secondary keywords.</p>
+          <span class="ex">Triggered only when clearly sexual.</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- ─────────── §5 Anatomy of an entry ─────────── -->
+    <section aria-labelledby="s5">
+      <h2 id="s5"><span class="num">§ 05</span>Anatomy of an entry</h2>
+      <hr class="rule">
+
+      <p class="platform-note">
+        <span class="pill">SillyTavern</span>
+        <span class="also">— field names below are ST's. JAI scripts use the
+        same writing logic, but keywords follow
+        <a href="#s6">wildcard syntax</a> instead.</span>
+      </p>
+
+      <p class="lead" style="font-size:18px">
+        Every entry has the same three core parts:
+        <strong>a name</strong>, <strong>keywords</strong> that trigger it,
+        and <strong>content</strong> the AI sees when it fires.
+      </p>
+
+      <p style="margin-top:14px;color:var(--paper)">
+        Good entries lean on <strong>sensory specifics</strong> — brand names,
+        smells, what the room sounds like, who else is there. The AI uses
+        these as anchors to stay grounded in the scene. Vague entries
+        ("she is shy and kind") are mostly wasted tokens.
+      </p>
+
+      <div class="example" aria-label="Example NPC lorebook entry">
+        <div class="bar">
+          <span>Example A · NPC entry · World lorebook</span>
+          <span>≈ 180 tokens</span>
+        </div>
+        <div class="body"><span class="c">— Name (your reference — the AI doesn't read it)</span>
+<span class="k">comment:</span>  <span class="v">Margot Sable — bassist, ex-fiancée</span>
+
+<span class="c">— Keywords that fire this entry</span>
+<span class="k">keys:</span>     <span class="v">Margot, Sable, "the bassist", /\bex[- ]?fiancée?\b/i</span>
+
+<span class="c">— Content the AI sees when fired</span>
+<span class="k">content:</span>
+  <span class="k">[BASICS]</span>
+  Margot Sable, 29. Bassist for The Static Wives since '94.
+  Engaged to {{char}} for eleven months in '95 — called it
+  off the night the band signed with Polydor.
+
+  <span class="k">[APPEARANCE]</span>
+  Tall, sharp jaw, hair bleached and re-bleached until it
+  looks like brittle hay. Smells like Marlboro Reds and the
+  same drugstore vanilla she's worn since college.
+
+  <span class="k">[NOW]</span>
+  Speaks to {{char}} only in soundcheck and only about cues.
+  Sleeps with the light on in the bunk across from his.
+  Pretends she doesn't.</div>
+      </div>
+
+      <div class="example" aria-label="Example location lorebook entry" style="margin-top:18px">
+        <div class="bar">
+          <span>Example B · Location entry · Character lorebook</span>
+          <span>≈ 140 tokens</span>
+        </div>
+        <div class="body"><span class="c">— Personal angle on a place — what it means to {{char}}</span>
+<span class="k">comment:</span>  <span class="v">Echo Room (Detroit) — Personal</span>
+
+<span class="k">keys:</span>     <span class="v">Echo Room, Detroit, /\b(?:Detroit|Michigan)\b/i, "the basement venue"</span>
+
+<span class="k">content:</span>
+  <span class="k">[ECHO ROOM — PERSONAL]</span>
+  Detroit basement venue, 400 capacity. The first room
+  {{char}}'s band ever sold out, summer of '93.
+
+  <span class="k">[{{char}} HERE]</span>
+  Goes quiet in the loading dock for ten minutes before
+  doors. The smell — beer-soaked carpet, cold concrete,
+  someone's clove cigarette upstairs — undoes him every
+  time. Knows he was happier when this was the biggest
+  room he'd ever played.
+
+  <span class="k">[WITH {{user}}]</span>
+  Holds her wrist on the stairs down, not her hand.
+  Doesn't explain why.</div>
+      </div>
+
+      <p style="margin-top:18px;color:var(--sage);font-style:italic">
+        Aim for <strong>80–300 tokens</strong> per entry. Bracketed section
+        headers (<code>[BASICS]</code>, <code>[NOW]</code>) help both you
+        and the AI parse the entry quickly when several fire at once.
+      </p>
+    </section>
+
+    <!-- ─────────── §6 Keywords ─────────── -->
+    <section aria-labelledby="s6">
+      <h2 id="s6"><span class="num">§ 06</span>Keywords — the trigger</h2>
+      <hr class="rule">
+      <p class="lead" style="font-size:18px">
+        Keywords decide <em>when</em> an entry fires. Each platform handles
+        them differently, but the principles are the same: be specific,
+        cover plurals and synonyms, avoid words that show up everywhere.
+      </p>
+
+      <div class="split" aria-label="Keyword syntax — SillyTavern vs JanitorAI">
+        <div>
+          <h4 style="color:var(--moss)">SillyTavern</h4>
+          <h3 style="margin:0 0 6px;color:var(--vellum)">Regex</h3>
+          <p style="color:var(--paper);margin:6px 0 12px">
+            Wrap a pattern in slashes — full regex syntax works, including
+            word boundaries and alternation.
+          </p>
+          <p style="margin:0"><code>/\bbar\b/i</code> — exact word</p>
+          <p style="margin:0"><code>/\bdrink(?:s|ing)?\b/i</code> — with suffixes</p>
+          <p style="margin:0"><code>/\b(?:mom|mother|mama)\b/i</code> — synonyms</p>
+          <p style="margin:0;color:var(--sage);font-style:italic;margin-top:10px">
+            Plain text like <code>Margot</code> also works for proper nouns.
+          </p>
+        </div>
+        <div>
+          <h4 style="color:var(--wheat)">JanitorAI</h4>
+          <h3 style="margin:0 0 6px;color:var(--vellum)">Wildcards</h3>
+          <p style="color:var(--paper);margin:6px 0 12px">
+            No regex. Two options only: an exact word, or a stem ending
+            with <code>*</code> that matches anything starting with it.
+          </p>
+          <p style="margin:0"><code>bar</code> — exact word</p>
+          <p style="margin:0"><code>drink*</code> — stem (drinks, drinking, drunken…)</p>
+          <p style="margin:0"><code>margot</code> — names match exactly</p>
+          <p style="margin:0;color:var(--sage);font-style:italic;margin-top:10px">
+            For synonyms, list each as a separate keyword.
+          </p>
+        </div>
+      </div>
+
+      <h3 style="margin-top:32px">Pick keywords that <em>only</em> mean what you want</h3>
+      <p>
+        The biggest beginner mistake is using broad words like
+        <code>look</code>, <code>feel</code>, <code>walk</code> as triggers —
+        they fire on every other message. Either use a specific word, or pair
+        a broad keyword with a <strong>secondary key</strong> (most
+        platforms support this) so both have to appear before the entry
+        fires.
+      </p>
+    </section>
+
+    <!-- ─────────── §7 Do / Don't ─────────── -->
+    <section aria-labelledby="s7">
+      <h2 id="s7"><span class="num">§ 07</span>Quick rules</h2>
+      <hr class="rule">
+
+      <div class="do-dont">
+        <div class="col do">
+          <h4 class="do-h">Do</h4>
+          <ul>
+            <li>Keep the card focused on identity — everything else moves out</li>
+            <li>One entry per topic, per NPC, per location</li>
+            <li>Write content in plain language — the AI reads it like text</li>
+            <li>Use specific keywords (names, places, exact terms)</li>
+            <li>Set cooldowns on events and secrets so they don't repeat</li>
+            <li>Reference NPC names exactly the same across entries</li>
+          </ul>
+        </div>
+        <div class="col dont">
+          <h4 class="dont-h">Don't</h4>
+          <ul>
+            <li>Don't duplicate info between the card and lorebook</li>
+            <li>Don't write entries as instructions ("the AI should…")</li>
+            <li>Don't use common verbs as keywords without a gate</li>
+            <li>Don't gate NSFW entries on soft words alone — be explicit</li>
+            <li>Don't ship 100+ entries; consolidate aggressively</li>
+            <li>Don't forget — entries only fire if their keywords appear in chat</li>
+          </ul>
+        </div>
+      </div>
+
+      <p style="margin-top:24px;color:var(--sage);font-style:italic;text-align:center">
+        Start small. Five good entries beat fifty noisy ones.
+      </p>
+    </section>
+
+    <!-- ─────────── §8 Build order ─────────── -->
+    <section aria-labelledby="s8">
+      <h2 id="s8"><span class="num">§ 08</span>Build order</h2>
+      <hr class="rule">
+      <p class="lead" style="font-size:18px">
+        The order you build things in matters. Each step depends on the
+        last — skipping ahead usually means rewriting later.
+      </p>
+
+      <div class="steps">
+        <div class="step">
+          <div>
+            <h3>Sketch the world (or skip)</h3>
+            <p>If your bot has a setting that matters — a tour, a school,
+               a fictional town — outline it first. If it's just two people
+               in a room, you can skip straight to the card.</p>
+            <p class="why">→ The world is the stage everything else stands on.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div>
+            <h3>Write the character card</h3>
+            <p>Identity, look, voice, personality, dynamic with
+               <code>{{user}}</code>. This is the always-on layer — the AI
+               sees it every single turn.</p>
+            <p class="why">→ Until the card holds together, no lorebook can rescue it.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div>
+            <h3>Build the character lorebook</h3>
+            <p>Pull anything from the card that's only relevant
+               <em>sometimes</em> — backstory events, hidden traits, NPCs,
+               kinks. Each becomes a triggered entry.</p>
+            <p class="why">→ This is where bots actually get their depth.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div>
+            <h3>Add the world lorebook (if needed)</h3>
+            <p>Locations, factions, lore, supporting NPCs. Only worth it
+               if the world is rich enough to deserve its own pages.</p>
+            <p class="why">→ Optional. Many bots ship without one.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div>
+            <h3>User / persona lorebook (advanced)</h3>
+            <p>What <code>{{char}}</code> has noticed about
+               <code>{{user}}</code>. Optional — most beginners skip this
+               and add it later when the dynamic gets specific.</p>
+            <p class="why">→ Skip this on your first bot. Come back later.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div>
+            <h3>Test &amp; trim</h3>
+            <p>Roleplay with the bot. Notice which entries never fire
+               (bad keywords) or fire constantly (broad keywords). Fix or
+               delete. Repeat until it feels right.</p>
+            <p class="why">→ The first draft is never the final one.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── §9 Card field cheat-sheet ─────────── -->
+    <section aria-labelledby="s9">
+      <h2 id="s9"><span class="num">§ 09</span>Card field cheat-sheet</h2>
+      <hr class="rule">
+
+      <p class="platform-note">
+        <span class="pill">SillyTavern</span>
+        <span class="also">— field names below are ST's. JAI cards have
+        a similar split (Personality, Scenario, Example dialogues) — same
+        logic applies.</span>
+      </p>
+
+      <p class="lead" style="font-size:18px">
+        A character card has several fields. Beginners constantly mix
+        them up — here's what each one is actually for.
+      </p>
+
+      <div class="field-table" role="table" aria-label="Card field reference">
+        <div class="field-row">
+          <div class="name">Description<small>~1000–2000 tokens</small></div>
+          <div class="desc">
+            The <strong>main body</strong>. Identity, appearance, personality,
+            speech, sexuality, backstory, and the relationship with
+            <code>{{user}}</code>. <em>This is the bulk of the card.</em>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="name">Personality<small>~50–80 tokens</small></div>
+          <div class="desc">
+            A <strong>one-line distillation</strong> of who the character is.
+            Used by some prompt formats as a short-form reference. Don't
+            duplicate Description here — keep it tight.
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="name">Scenario<small>~50–100 tokens</small></div>
+          <div class="desc">
+            <strong>Where and when</strong> the chat opens. The setting,
+            the time, and <code>{{user}}</code>'s role in it. Two to five
+            sentences. <em>Not the whole story — just the entry point.</em>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="name">First message<small>varies</small></div>
+          <div class="desc">
+            The <strong>opening turn</strong> the AI sends. Sets the tone,
+            atmosphere, and writing style for the whole chat. Treat it
+            like the first paragraph of a novel.
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="name">Example dialogue<small>optional</small></div>
+          <div class="desc">
+            Sample exchanges that show <strong>how the character speaks</strong>.
+            Useful for distinctive voices, but eats tokens — skip it if
+            the Description already nails the voice.
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="name">Character's Note<small>~50–150 tokens</small></div>
+          <div class="desc">
+            A <strong>reminder</strong> injected near the bottom of the
+            prompt. Use for critical rules: <em>"{{char}} never breaks
+            character"</em>, <em>"{{char}} stays in 1996"</em>. Keep it short.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── §10 Token budget visualization ─────────── -->
+    <section aria-labelledby="s10">
+      <h2 id="s10"><span class="num">§ 10</span>Where do tokens go?</h2>
+      <hr class="rule">
+      <p class="lead" style="font-size:18px">
+        Every model has a context window — the total number of tokens it
+        can hold per turn. Lorebooks live inside that window, fighting
+        for space with everything else. Here's a rough split for a
+        typical 32k-token chat mid-conversation:
+      </p>
+
+      <div class="budget-wrap" aria-label="Approximate token budget split">
+        <div class="budget-label">
+          <span>Context window</span>
+          <span>≈ 32,000 tokens</span>
+        </div>
+        <div class="budget-bar" role="img" aria-label="System 12 percent, card 14 percent, lorebook 30 percent, chat history 38 percent, reply 6 percent">
+          <div class="b-system">Sys</div>
+          <div class="b-card">Card</div>
+          <div class="b-lore">Lorebook</div>
+          <div class="b-chat">Chat history</div>
+          <div class="b-reply">Reply</div>
+        </div>
+        <div class="budget-legend">
+          <div class="item"><span class="swatch" style="background:var(--wheat)"></span>
+            <div><strong>System</strong> — prompt, format, jailbreak<br><small>fixed</small></div>
+          </div>
+          <div class="item"><span class="swatch" style="background:var(--leaf)"></span>
+            <div><strong>Card</strong> — character description, persona<br><small>always loaded</small></div>
+          </div>
+          <div class="item"><span class="swatch" style="background:var(--moss)"></span>
+            <div><strong>Lorebook</strong> — only entries that triggered<br><small>typically 25–35%</small></div>
+          </div>
+          <div class="item"><span class="swatch" style="background:var(--sage)"></span>
+            <div><strong>Chat history</strong> — past messages<br><small>grows every turn</small></div>
+          </div>
+          <div class="item"><span class="swatch" style="background:var(--vellum)"></span>
+            <div><strong>Reply</strong> — space for the AI's response<br><small>reserved</small></div>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top:18px;color:var(--paper)">
+        When the lorebook section overflows its budget, entries get
+        <strong>dropped</strong> — usually the lowest-priority ones first.
+        That's why <em>fewer good entries</em> beat <em>many bloated ones</em>:
+        a 600-token entry that fires twice a chat is worse than a
+        150-token one that fires every time it's needed.
+      </p>
+    </section>
+
+    <!-- ─────────── §11 Common mistakes ─────────── -->
+    <section aria-labelledby="s11">
+      <h2 id="s11"><span class="num">§ 11</span>Common mistakes</h2>
+      <hr class="rule">
+      <p class="lead" style="font-size:18px">
+        Six things that go wrong on every beginner's first lorebook —
+        and how to fix them.
+      </p>
+
+      <div class="mistakes">
+        <details class="mistake">
+          <summary>My entry never fires.</summary>
+          <div class="body">
+            Almost always a <strong>keyword problem</strong>. The chat has
+            to actually contain a word that matches your trigger.
+            <div class="fix">
+              <strong>Fix —</strong> open the chat, find a message where
+              the entry <em>should</em> have fired, and check whether any
+              of your keywords appear in it. Add the words you actually
+              see being used. Common miss: typing <code>"jealous"</code>
+              as a keyword but the chat says <em>"can't stand seeing them
+              together"</em>. Add synonyms.
+            </div>
+          </div>
+        </details>
+
+        <details class="mistake">
+          <summary>My entry fires every single message.</summary>
+          <div class="body">
+            You used a <strong>broad keyword</strong> — something like
+            <code>look</code>, <code>walk</code>, <code>say</code> — that
+            shows up in nearly every message.
+            <div class="fix">
+              <strong>Fix —</strong> swap to specific words, or pair the
+              broad word with a <em>secondary key</em> so both have to
+              appear before the entry triggers. Most platforms support
+              this under names like <em>selective</em>, <em>secondary keys</em>,
+              or <em>and-any</em>.
+            </div>
+          </div>
+        </details>
+
+        <details class="mistake">
+          <summary>The bot keeps repeating the same scene.</summary>
+          <div class="body">
+            An <strong>event entry</strong> with no cooldown is firing
+            every turn its keywords appear. The AI keeps re-describing the
+            same beat.
+            <div class="fix">
+              <strong>Fix —</strong> add a <em>cooldown</em> (3–10
+              messages) and <em>sticky</em> (so it stays for 2–3 turns
+              once fired). Events should hit, linger, then go silent.
+            </div>
+          </div>
+        </details>
+
+        <details class="mistake">
+          <summary>My context is full and the bot forgot everything.</summary>
+          <div class="body">
+            Too many entries firing at once, or entries are too long. The
+            chat history gets <strong>truncated</strong> to make room.
+            <div class="fix">
+              <strong>Fix —</strong> shrink your longest entries to 80–300
+              tokens. Tighten or merge any entry over 400 tokens. Lower
+              the lorebook budget to 25–30% of the context. Quality over
+              quantity always wins here.
+            </div>
+          </div>
+        </details>
+
+        <details class="mistake">
+          <summary>The AI keeps mixing up two NPCs.</summary>
+          <div class="body">
+            Their entries probably share too many keywords, and they fire
+            together when only one is meant.
+            <div class="fix">
+              <strong>Fix —</strong> use <strong>full names</strong> as
+              the primary triggers (<code>Margot Sable</code>, not just
+              <code>Margot</code> if there's a Margot Lin too). Reserve
+              role keywords for genuinely shared contexts.
+            </div>
+          </div>
+        </details>
+
+        <details class="mistake">
+          <summary>My NSFW entry leaks into normal scenes.</summary>
+          <div class="body">
+            The trigger words are too soft — words like <code>kiss</code>
+            or <code>touch</code> appear in non-sexual contexts all the
+            time.
+            <div class="fix">
+              <strong>Fix —</strong> always gate NSFW entries with
+              <em>explicit</em> secondary keys (genitalia, sexual verbs,
+              moans). Both the soft and the explicit word should be
+              required before the entry fires.
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ─────────── §12 Glossary ─────────── -->
+    <section aria-labelledby="s12">
+      <h2 id="s12"><span class="num">§ 12</span>Glossary</h2>
+      <hr class="rule">
+      <p class="lead" style="font-size:18px">
+        Quick definitions for the terms you'll see in lorebook editors.
+        Names vary slightly between platforms — the <em>concept</em> is
+        usually the same.
+      </p>
+
+      <dl class="glossary">
+        <dt>Token</dt>
+        <dd>A chunk of text the AI counts. Roughly ¾ of a word in English.
+            "Hello world" is about 2 tokens.</dd>
+
+        <dt>Context window</dt>
+        <dd>The total tokens an AI can hold at once — system prompt, card,
+            lorebook, chat history, and reply combined.</dd>
+
+        <dt>Entry</dt>
+        <dd>One note inside a lorebook. Has a name, keywords, and
+            content. Fires when its keywords appear in chat.</dd>
+
+        <dt>Keyword / key</dt>
+        <dd>The trigger word(s). When any of them appears in recent
+            messages, the entry activates.</dd>
+
+        <dt>Secondary key</dt>
+        <dd>An extra word that <em>also</em> has to appear for the entry
+            to fire. Used to gate broad keywords.</dd>
+
+        <dt>Order / priority</dt>
+        <dd>Which entries get dropped first when the budget is tight.
+            Higher order = survives longer.</dd>
+
+        <dt>Depth</dt>
+        <dd>How far back into the chat the entry's content gets injected.
+            Lower = closer to the AI's reply = stronger influence.</dd>
+
+        <dt>Constant</dt>
+        <dd>An entry that fires <em>every turn</em> regardless of
+            keywords. Use sparingly — it's expensive.</dd>
+
+        <dt>Sticky</dt>
+        <dd>Once fired, the entry stays active for N more turns, even if
+            its keywords disappear. Good for ongoing events.</dd>
+
+        <dt>Cooldown</dt>
+        <dd>After firing, the entry can't fire again for N turns. Stops
+            scenes from repeating.</dd>
+
+        <dt>Delay</dt>
+        <dd>The entry can't fire at all until N messages have happened.
+            Useful for secrets that shouldn't surface immediately.</dd>
+
+        <dt>Recursion</dt>
+        <dd>When a fired entry's content contains keywords that trigger
+            <em>more</em> entries. Powerful, but easy to spiral.</dd>
+
+        <dt>Selective</dt>
+        <dd>Mode where a primary key plus a secondary key are both
+            required to fire. Used to prevent broad-keyword pollution.</dd>
+
+        <dt>Probability</dt>
+        <dd>Chance (0–100%) that a triggered entry actually fires.
+            Useful for variant outcomes.</dd>
+
+        <dt>Scenario</dt>
+        <dd>A short setup field on the character card describing where
+            and when the chat opens.</dd>
+
+        <dt>Persona</dt>
+        <dd>The <code>{{user}}</code> identity layer. ST has a dedicated
+            slot for it; JAI keeps it in the chat setup.</dd>
+      </dl>
+    </section>
+
+    <!-- ─────────── §13 Resources ─────────── -->
+    <section aria-labelledby="s13">
+      <h2 id="s13"><span class="num">§ 13</span>Further reading</h2>
+      <hr class="rule">
+      <p class="lead" style="font-size:18px">
+        This compendium covers the basics. For everything else,
+        <strong>read the official docs</strong> — they're more accurate,
+        more current, and more thorough than any third-party guide
+        (mine included).
+      </p>
+
+      <div class="resources">
+        <article class="resource">
+          <h4>SillyTavern Documentation</h4>
+          <p>The official wiki. Covers world info, scripts, regex,
+             extensions, and every checkbox in the UI. Genuinely worth
+             reading top-to-bottom once.</p>
+          <a href="https://docs.sillytavern.app/"
+             target="_blank" rel="noopener noreferrer external">docs.sillytavern.app →</a>
+        </article>
+
+        <article class="resource warm">
+          <h4>JanitorAI Help Center</h4>
+          <p>JAI's official guides — character creation, advanced scripts,
+             lorebook setup. Their script docs are essential if you're
+             building anything beyond a basic bot.</p>
+          <a href="https://help.janitorai.com/en/category/user-guides-vtspde/"
+             target="_blank" rel="noopener noreferrer external">help.janitorai.com →</a>
+        </article>
+
+        <article class="resource">
+          <h4>Community guides &amp; Discord</h4>
+          <p>Both platforms have active communities sharing prompts,
+             tips, and lorebook examples. Search for the ST or JAI Discord
+             — that's where the working knowledge actually lives.</p>
+          <a href="https://discord.gg/sillytavern"
+             target="_blank" rel="noopener noreferrer external">SillyTavern Discord →</a>
+        </article>
+
+        <article class="resource warm">
+          <h4>This compendium's source</h4>
+          <p>If you want to see how the system in this guide is actually
+             written out — instructions, templates, validation rules —
+             those files live in the repo this page came from.</p>
+          <a href="#s1">Back to top ↑</a>
+        </article>
+      </div>
+
+      <p class="vibe-note">
+        <strong>Honest tip from one lazy vibecoder to another —</strong> all of this
+        (docs, templates, even your half-finished bot files) can be dropped
+        into Claude / GPT / whichever agent you trust. They'll happily
+        write entries, debug keywords, and fix your JSON. Use the tools
+        you have.
+        <span class="kao">(˶˃ ᵕ ˂˶) .ᐟ.ᐟ</span>
+      </p>
+    </section>
+
+    <!-- ─────────── footer ─────────── -->
+    <footer class="colophon">
+      <div>☘ &nbsp; The Lorebook Compendium &nbsp; ☘</div>
+      <div class="signoff">written by</div>
+      <a href="https://janitorai.com/profiles/895c6c07-6a53-4420-bff5-b874db870b32_profile-of-aceenvw"
+         target="_blank"
+         rel="noopener noreferrer external">aceenvw</a>
+    </footer>
+
+<script>document.querySelectorAll('.nav-panel a').forEach(function(a){a.addEventListener('click',function(){document.getElementById('nav-toggle').checked=false;});});</script>
+</body>
+</html>
