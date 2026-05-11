@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <title>Clover</title>
+  <defs>
+    <radialGradient id="leaf" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#A8E6B0"/>
+      <stop offset="60%" stop-color="#7FCC8F"/>
+      <stop offset="100%" stop-color="#4A8657"/>
+    </radialGradient>
+  </defs>
+  <g transform="translate(32 34)">
+    <!-- four heart-shaped leaves arranged in a cross -->
+    <g fill="url(#leaf)" stroke="#0A1A0F" stroke-width="1" stroke-linejoin="round">
+      <!-- top leaf -->
+      <path d="M0 -3 C -10 -3, -14 -14, -8 -20 C -4 -23, 0 -20, 0 -16 C 0 -20, 4 -23, 8 -20 C 14 -14, 10 -3, 0 -3 Z"/>
+      <!-- right leaf -->
+      <path d="M3 0 C 3 -10, 14 -14, 20 -8 C 23 -4, 20 0, 16 0 C 20 0, 23 4, 20 8 C 14 14, 3 10, 3 0 Z"/>
+      <!-- bottom leaf -->
+      <path d="M0 3 C -10 3, -14 14, -8 20 C -4 23, 0 20, 0 16 C 0 20, 4 23, 8 20 C 14 14, 10 3, 0 3 Z"/>
+      <!-- left leaf -->
+      <path d="M-3 0 C -3 -10, -14 -14, -20 -8 C -23 -4, -20 0, -16 0 C -20 0, -23 4, -20 8 C -14 14, -3 10, -3 0 Z"/>
+    </g>
+    <!-- stem -->
+    <path d="M0 4 Q 2 14, 0 22 Q -2 28, 1 30" fill="none" stroke="#5A8A5F" stroke-width="2" stroke-linecap="round"/>
+    <!-- center accent -->
+    <circle cx="0" cy="0" r="2" fill="#0A1A0F"/>
+  </g>
+</svg>
